@@ -1,14 +1,21 @@
 import * as React from 'react';
-import { View, StyleSheet,ImageBackground,Text } from 'react-native';
+import { View, StyleSheet,ImageBackground,Button,TouchableOpacity,Text } from 'react-native';
 import bg from '../assets/bg.jpg'
 
-export default function HomePage() {
+
+import bgvideo from '../assets/videoBg.mp4'
+
+export default function HomePage({navigation}) {
 
     return (
         <>
         <View style={styles.container}>
         <ImageBackground source={bg} resizeMode="cover" style={styles.image}>
-        <Text>EE</Text>
+
+        <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('Search')}>
+            <Text style={styles.buttonText}>PRESS</Text>
+        </TouchableOpacity>
+
         </ImageBackground>
         </View>
         </>
@@ -30,5 +37,16 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'center',
       backgroundColor: '#000000c0',
+    },
+    button: {
+        backgroundColor: '#007bff', 
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        textAlign: 'center',
     },
   });
