@@ -1,87 +1,72 @@
-import 'react-native-gesture-handler';
-import * as React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+
 import HomePage from './PagesComponent/HomePage';
-import SearchPage from './PagesComponent/SearchPage';
-import SearchResultPage from './PagesComponent/SearchResultPage';
+import Personnages from './PagesComponent/Personnages';
+import About from './PagesComponent/About';
+import More from './PagesComponent/More';
+import CharacterDetails from './PagesComponent/CharacterDetails';
 
-
-const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const CustomDrawerContent = ({ navigation }) => {
-  const menuItems = [
-    { label: 'Accueil', icon: 'home', screen: 'Home' },
-    { label: 'Recherche', icon: 'search', screen: 'Search' },
-  ];
+const CustomTabIcon = ({ icon }) => (
+  <View style={{ alignItems: 'center' }}>
+    {icon}
+  </View>
+);
 
-  return (
-    <View style={styles.drawerContent}>
-      {menuItems.map((item, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.drawerItem}
-          onPress={() => navigation.navigate(item.screen)}
-        >
-          <FontAwesome name={item.icon} size={24} color="#333" style={styles.drawerIcon} />
-          <Text style={styles.drawerLabel}>{item.label}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-};
+const MainTabs = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ color, size }) => {
+        let icon;
+
+        if (route.name === 'Home') {
+          icon = <CustomTabIcon icon={<FontAwesome name="home" size={size} color="#3B5998" />} />;
+        } else if (route.name === 'Personnages') {
+          icon = <CustomTabIcon icon={<FontAwesome name="users" size={size} color="#3B5998" />} />;
+        } else if (route.name === 'A propos') {
+          icon = <CustomTabIcon icon={<FontAwesome name="info-circle" size={size} color="#3B5998" />} />;
+        } else if (route.name === 'Plus') {
+          icon = <CustomTabIcon icon={<FontAwesome name="plus-circle" size={size} color="#3B5998" />} />;
+        }
+
+        return icon;
+      },
+      tabBarActiveTintColor: '#3B5998',
+      tabBarInactiveTintColor: '#C0C0C0',
+      tabBarStyle: {
+        backgroundColor: '#C0C0C0',
+      },
+      headerStyle: {
+        backgroundColor: '#C0C0C0',
+      },
+      headerTitle: '',
+      headerTintColor: '#3B5998',
+      headerTitleStyle: {
+        fontSize: 24,
+      },
+    })}
+  >
+    <Tab.Screen name="Home" component={HomePage} />
+    <Tab.Screen name="Personnages" component={Personnages} />
+    <Tab.Screen name="A propos" component={About} />
+    <Tab.Screen name="Plus" component={More} />
+  </Tab.Navigator>
+);
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator
-        initialRouteName="Home"
-        drawerContent={props => <CustomDrawerContent {...props} />}
-        drawerStyle={{
-          backgroundColor: '#f2f2f2',
-          width: 240,
-        }}
-        drawerContentOptions={{
-          activeTintColor: '#007bff',
-        }}
-      >
-        <Drawer.Screen name="Home" component={HomePage} />
-        <Drawer.Screen name="Search" component={SearchStack} />
-      </Drawer.Navigator>
+      <Stack.Navigator>
+        <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="CharacterDetails" component={CharacterDetails} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const SearchStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Search" component={SearchPage} />
-      <Stack.Screen name="SearchResult" component={SearchResultPage} />
-    </Stack.Navigator>
-  );
-};
-
-const styles = StyleSheet.create({
-  drawerContent: {
-    flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 20,
-  },
-  drawerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  drawerIcon: {
-    marginRight: 15,
-  },
-  drawerLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-});
