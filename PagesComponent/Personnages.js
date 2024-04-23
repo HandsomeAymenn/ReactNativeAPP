@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importer useNavigation
+import { StyleSheet, Text, View, FlatList, ImageBackground, TouchableOpacity, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const backgroundImage = require('../assets/MainBg.jpg');
 
 export default function Personnages() {
   const [characters, setCharacters] = useState([]);
-  const navigation = useNavigation(); // Utiliser useNavigation pour obtenir l'objet de navigation
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetch('http://api-fantasygame.eu-4.evennode.com/get-characters')
@@ -38,33 +38,42 @@ export default function Personnages() {
     }
   };
 
-  // Gérer le clic sur un personnage
   const handleCharacterPress = (characterId) => {
-    navigation.navigate('CharacterDetails', { characterId }); // Ouvrir la page de détails du personnage avec l'ID du personnage
+    navigation.navigate('CharacterDetails', { characterId });
   };
+
+  const bottomElement = { id: 'bottom', height: 200 };
+  const charactersWithBottomElement = [...characters, bottomElement];
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.title}>Personnages</Text>
         <FlatList
-          data={characters}
+          data={charactersWithBottomElement}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleCharacterPress(item.id)}>
-              <View style={styles.characterContainer}>
-                <View style={[styles.characterContent, { backgroundColor: getGradientColorByRarity(item.rarity)[1], borderColor: getGradientColorByRarity(item.rarity)[0] }]}>
-                  <Text style={[styles.name, { color: getGradientColorByRarity(item.rarity)[2] }]}>{item.name}</Text>
-                  <Text style={[styles.rarity, { color: getGradientColorByRarity(item.rarity)[2] }]}>Rareté : {item.rarity}</Text>
-                </View>
-                <View style={[styles.descriptionContainer, { backgroundColor: getGradientColorByRarity(item.rarity)[1], borderColor: getGradientColorByRarity(item.rarity)[0] }]}>
-                  <Text style={[styles.description, { color: getGradientColorByRarity(item.rarity)[2] }]}>{item.description}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => {
+            if (item.id === 'bottom') {
+              return <View style={{ height: item.height }} />;
+            } else {
+              return (
+                <TouchableOpacity onPress={() => handleCharacterPress(item.id)}>
+                  <View style={styles.characterContainer}>
+                    <View style={[styles.characterContent, { backgroundColor: '#3B5998', borderColor: `linear-gradient(to bottom, ${getGradientColorByRarity(item.rarity)[2]}, #fff)` }]}>
+                      <Text style={[styles.name, { color: '#000' }]}>{item.name}</Text>
+                      <Text style={[styles.rarity, { color: getGradientColorByRarity(item.rarity)[2] }]}>Rareté : {item.rarity}</Text>
+                    </View>
+                    <View style={[styles.descriptionContainer, { backgroundColor: '#3B5998', borderColor: getGradientColorByRarity(item.rarity)[0] }]}>
+                      <Text style={[styles.description, { color: '#000' }]}>{item.description}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
+          }}
         />
-      </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
@@ -96,23 +105,23 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+    backgroundColor: '#3B5998',
+    borderWidth: 0,
     borderRightWidth: 5,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
   },
   descriptionContainer: {
     padding: 10,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     borderBottomWidth: 4,
+    borderWidth: 0,
     borderRightWidth: 5,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#000',
   },
   rarity: {
     fontSize: 16,
@@ -121,5 +130,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
+    color: '#000',
   },
 });

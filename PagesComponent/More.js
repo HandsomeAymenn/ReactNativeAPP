@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, ScrollView, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Linking } from 'react-native';
 
 export default function More(){
     const [backgroundImage, setBackgroundImage] = React.useState(null);
@@ -15,6 +15,10 @@ export default function More(){
                 console.error('Error fetching background image:', error);
             });
     }, []);
+
+    const handleContactPress = () => {
+        Linking.openURL('mailto:contact@example.com');
+    };
 
     return (
         <ImageBackground source={{ uri: backgroundImage }} style={styles.background}>
@@ -34,6 +38,9 @@ export default function More(){
                         Phone: +1234567890{"\n"}
                         Address: 123 Main Street, City, Country
                     </Text>
+                    <TouchableOpacity onPress={handleContactPress} style={styles.contactButton}>
+                        <Text style={styles.contactButtonText}>Nous contacter</Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </ImageBackground>
@@ -70,5 +77,17 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 20,
         color: '#333',
+    },
+    contactButton: {
+        backgroundColor: '#3B5998',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    contactButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
 });

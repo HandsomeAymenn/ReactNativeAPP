@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 export default function About() {
   const [email, setEmail] = useState('');
@@ -7,7 +7,6 @@ export default function About() {
   const [message, setMessage] = useState('');
 
   const handleSubmit = () => {
-    Keyboard.dismiss(); // Fermer le clavier
     if (email && subject && message) {
       Alert.alert('Formulaire envoyé !', 'Merci pour votre message.');
     } else {
@@ -15,41 +14,47 @@ export default function About() {
     }
   };
 
+  const handlePressOutside = () => {
+    Keyboard.dismiss(); // Fermer le clavier lorsque l'utilisateur clique en dehors du champ de saisie
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>A Propos</Text>
-      <Text style={styles.subtitle}>Mystic Forge Studios</Text>
-      <Text style={styles.paragraph}>
-        Situés au cœur de l'innovation et de la créativité, nous sommes une équipe passionnée de développeurs, de designers et de conteurs dédiée à la création d'expériences vidéoludiques immersives et captivantes.
-      </Text>
+    <TouchableWithoutFeedback onPress={handlePressOutside}>
+      <View style={styles.container}>
+        <Text style={styles.title}>A Propos</Text>
+        <Text style={styles.subtitle}>Mystic Forge Studios</Text>
+        <Text style={styles.paragraph}>
+          Situés au cœur de l'innovation et de la créativité, nous sommes une équipe passionnée de développeurs, de designers et de conteurs dédiée à la création d'expériences vidéoludiques immersives et captivantes.
+        </Text>
 
-      <Text style={styles.subtitle}>Notre Mission</Text>
-      <Text style={styles.paragraph}>
-        Chez Mystic Forge Studios, notre mission est de transcender les frontières traditionnelles du jeu vidéo pour offrir des aventures uniques et mémorables. Nous croyons en la puissance du jeu pour rassembler les gens, raconter des histoires profondes et offrir des expériences enrichissantes qui restent avec les joueurs longtemps après qu'ils aient mis de côté leur console.
-      </Text>
+        <Text style={styles.subtitle}>Notre Mission</Text>
+        <Text style={styles.paragraph}>
+          Chez Mystic Forge Studios, notre mission est de transcender les frontières traditionnelles du jeu vidéo pour offrir des aventures uniques et mémorables. Nous croyons en la puissance du jeu pour rassembler les gens, raconter des histoires profondes et offrir des expériences enrichissantes qui restent avec les joueurs longtemps après qu'ils aient mis de côté leur console.
+        </Text>
 
-      <Text style={styles.title}>Contact</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Sujet"
-        value={subject}
-        onChangeText={setSubject}
-      />
-      <TextInput
-        style={[styles.input, styles.messageInput]}
-        placeholder="Message"
-        multiline
-        value={message}
-        onChangeText={setMessage}
-      />
-      <Button title="Envoyer" onPress={handleSubmit} />
-    </View>
+        <Text style={styles.title}>Contact</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Sujet"
+          value={subject}
+          onChangeText={setSubject}
+        />
+        <TextInput
+          style={[styles.input, styles.messageInput]}
+          placeholder="Message"
+          multiline
+          value={message}
+          onChangeText={setMessage}
+        />
+        <Button title="Envoyer" onPress={handleSubmit} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
